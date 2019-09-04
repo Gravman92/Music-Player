@@ -66,11 +66,6 @@ class PlayerVC: UIViewController {
     @objc func updatingItems (){
         songName.text = playlist[currentSong].title
         songFullName.text = playlist[currentSong].fullTrackName
-        UIView.animate(withDuration: 30, animations: {
-            
-        }) { _ in
-            
-        }
         auPlayer.delegate = self as AVAudioPlayerDelegate
         albumCover.image = playlist[currentSong].artwork
         progressSlider.setValue(Float(auPlayer.currentTime), animated: true)

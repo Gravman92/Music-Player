@@ -14,9 +14,10 @@ class ListVC: UIViewController {
     
     @IBOutlet weak var playlistTable: UITableView!
     
-    @IBOutlet weak var navigationBarItem: UINavigationBar!
-    
     @IBOutlet weak var searchBar: UISearchBar!
+    
+    @IBOutlet weak var searchOut: UIBarButtonItem!
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
@@ -26,6 +27,7 @@ class ListVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        longPress()
         creatingPlaylist()
         managers ()
         background()
@@ -36,6 +38,16 @@ class ListVC: UIViewController {
         super.viewWillDisappear(animated)
         updater.invalidate()
     }
+    
+    // MARK: - Metods
+    func longPress () {
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(gestureRecognizer:)))
+    }
+    
+    @objc func longPressGestureRecognized(gestureRecognizer: UIGestureRecognizer) {
+        
+    }
+    
     func creatingPlaylist () {
         let folderURL = Bundle.main.paths(forResourcesOfType: nil, inDirectory: "Music")
         
@@ -46,15 +58,18 @@ class ListVC: UIViewController {
             playlist.append(itemOfPlaylist)
         }
     }
+    
     func background() {
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(AVAudioSession.Category.playback)
         } catch {}
     }
+    
     func managers () {
         playlistVar = playlist
     }
+    
     func setUpdater() {
         updater = CADisplayLink(target: self, selector: #selector(updatingCell))
         updater.preferredFramesPerSecond = 1
@@ -77,8 +92,9 @@ class ListVC: UIViewController {
             }
         }
     }
+    
     @IBAction func searchBut(_ sender: UIButton) {
-   
+  
     }
     
 }
@@ -89,12 +105,14 @@ extension ListVC: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-        cell.textLabel?.text = playlistVar[indexPath.row].fullTrackName
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
+        cell.cellLabel.text = playlistVar[indexPath.row].fullTrackName
+        cell.cellBut.tag = indexPath.row
         return cell
     }
     
 }
+
 extension ListVC: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -140,3 +158,5 @@ extension ListVC: UISearchBarDelegate {
         searchBar.endEditing(true)
     }
 }
+
+
