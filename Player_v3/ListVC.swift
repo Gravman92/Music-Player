@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import CoreData
 
 class ListVC: UIViewController {
     var updater: CADisplayLink! = nil
@@ -108,6 +109,13 @@ extension ListVC: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
         cell.cellLabel.text = playlistVar[indexPath.row].fullTrackName
         cell.cellBut.tag = indexPath.row
+        if cell.cellBut.isSelected{
+            cell.cellBut.imageView?.image = UIImage(named: "like")
+            isFavorite = true
+        } else {
+            cell.cellBut.imageView?.image = UIImage(named: "like-2")
+            isFavorite = false
+        }
         return cell
     }
     

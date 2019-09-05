@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import CoreData
 
 class FavoriteVC: UIViewController {
     
@@ -17,6 +18,7 @@ class FavoriteVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         myFavoriteTable.isEditing = true
+        isFavorite = true
         
 
     }
