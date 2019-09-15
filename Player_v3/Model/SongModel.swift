@@ -8,7 +8,8 @@
 import UIKit
 import AVFoundation
 
-class Song {
+class SongModel {
+//    var isFavorite: Bool = false
     var url: URL?
     var title: String? = "Unknown"
     var artwork: UIImage? = UIImage(named: "default-cover")
@@ -17,7 +18,7 @@ class Song {
     var duration: Float64 = 0
     var fullTrackName: String {
         get {
-            return "\(String(describing: artist!)) - \(String(describing: title!))"
+            return "\(String(describing: artist ?? "")) - \(String(describing: title ?? ""))"
         }
     }
     

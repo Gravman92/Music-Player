@@ -20,7 +20,8 @@ class PlayerVC: UIViewController {
     @IBOutlet weak var progressSlider: UISlider!
     @IBOutlet weak var playPause: UIButton!
     
-    var updater: CADisplayLink! = nil
+    var updater: CADisplayLink!
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
@@ -48,9 +49,13 @@ class PlayerVC: UIViewController {
     //MARK: - Metods
     
     func defaulSong() {
+        
         if musicIsPlaying == false{
             do {
-                try auPlayer = AVAudioPlayer(contentsOf: playlist[currentSong].url!)
+                if currentSong < playlist.count {
+                    guard let url = playlist[currentSong].url else { return }
+                    try auPlayer = AVAudioPlayer(contentsOf: url)
+                }
             } catch {
                 print("Error")
             }

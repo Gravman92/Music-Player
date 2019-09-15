@@ -9,9 +9,8 @@ import Foundation
 import AVFoundation
 
 var auPlayer = AVAudioPlayer()
-var playlist: [Song] = []
-var playlistVar: [Song] = []
-var favoritePlaylist: [Song] = []
+var playlist: [SongModel] = []
+var playlistVar: [SongModel] = []
 var currentSong: Int = 0
 var musicIsPlaying: Bool = false
 var shuffleMode: Bool = false

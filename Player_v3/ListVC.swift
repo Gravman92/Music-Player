@@ -9,9 +9,11 @@
 import UIKit
 import AVFoundation
 import CoreData
+import MobileCoreServices
 
 class ListVC: UIViewController {
     var updater: CADisplayLink! = nil
+    var favoritePlaylist: [SongModel] = []
     
     @IBOutlet weak var playlistTable: UITableView!
     
@@ -19,20 +21,26 @@ class ListVC: UIViewController {
     
     @IBOutlet weak var searchOut: UIBarButtonItem!
     
+    let notification = NotificationCenter.default
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         setUpdater()
+        
+//        updateData(songName: <#T##String#>, isFavorite: <#T##Bool#>)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        longPress()
+//        playlistTable.setEditing(true, animated: true)
         creatingPlaylist()
         managers ()
         background()
         searchBar.delegate = self
+        addObserver()
+//        playlistTable.dragDelegate = self
+//        playlistTable.dropDelegate = self
         
     }
     override func viewDidDisappear(_ animated: Bool) {
@@ -40,10 +48,71 @@ class ListVC: UIViewController {
         updater.invalidate()
     }
     
-    // MARK: - Metods
-    func longPress () {
-        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(gestureRecognizer:)))
+    func addObserver() {
+        notification.addObserver(self, selector: #selector(handleHotification), name: NSNotification.Name.songData, object: nil)
     }
+    
+    @objc func handleHotification(_ notification: NSNotification) {
+        
+        if let userInfo = notification.userInfo as NSDictionary? {
+            guard let songName = userInfo["songName"] as? String else { return }
+            guard let isFavorite = userInfo["isFavorite"] as? Bool else { return }
+            saveData(songName: songName, isFavorite: isFavorite)
+            print(songName, isFavorite)
+        }
+        
+    }
+    
+    func saveData(songName: String, isFavorite: Bool) {
+        let context = CoreDataSingleton.shared.persistentContainer.viewContext
+        
+        let cont = NSEntityDescription.insertNewObject(forEntityName: "Songs", into: context) as! Songs
+        cont.setValue(songName, forKey: "songName")
+        cont.setValue(isFavorite, forKey: "isFavorite")
+        
+        do {
+            try context.save()
+            
+        } catch {
+            print ("Error")
+        }
+    }
+    
+    func updateData(songName: String, isFavorite: Bool) {
+     
+        let context = CoreDataSingleton.shared.persistentContainer.viewContext
+        
+        let cont: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Songs")
+        cont.predicate = NSPredicate(format: "isFavorite")
+        
+        do {
+            
+           let cont1 = try context.fetch(cont)
+            let favoriteUpdate = cont1[0] as! NSManagedObject
+            favoriteUpdate.setValue("Favorite", forKey: "isFavorite")
+            
+            do {
+                
+                try context.save()
+            
+            } catch {
+                
+                print ("error")
+            
+            }
+            
+        } catch {
+            
+            print ("error")
+            
+        }
+        
+    }
+    
+    // MARK: - Metods
+//    func longPress () {
+//        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(gestureRecognizer:)))
+//    }
     
     @objc func longPressGestureRecognized(gestureRecognizer: UIGestureRecognizer) {
         
@@ -55,7 +124,7 @@ class ListVC: UIViewController {
         for song in folderURL {
             let songPath = URL(fileURLWithPath: song)
             let avplayerItem = AVPlayerItem(url: songPath)
-            let itemOfPlaylist = Song(withAVPlayerItem: avplayerItem, url: songPath)
+            let itemOfPlaylist = SongModel(withAVPlayerItem: avplayerItem, url: songPath)
             playlist.append(itemOfPlaylist)
         }
     }
@@ -98,6 +167,12 @@ class ListVC: UIViewController {
   
     }
     
+    deinit {
+        
+        notification.removeObserver(self)
+        
+    }
+    
 }
 extension ListVC: UITableViewDataSource {
     
@@ -106,16 +181,10 @@ extension ListVC: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomCell
-        cell.cellLabel.text = playlistVar[indexPath.row].fullTrackName
-        cell.cellBut.tag = indexPath.row
-        if cell.cellBut.isSelected{
-            cell.cellBut.imageView?.image = UIImage(named: "like")
-            isFavorite = true
-        } else {
-            cell.cellBut.imageView?.image = UIImage(named: "like-2")
-            isFavorite = false
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCustomCell
+        cell.fullSongNameLabel.text = playlistVar[indexPath.row].fullTrackName
+        cell.isFavoriteButton.tag = indexPath.row
+
         return cell
     }
     
@@ -167,4 +236,18 @@ extension ListVC: UISearchBarDelegate {
     }
 }
 
-
+//extension ListVC: UITableViewDragDelegate {
+//    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+//        return
+//    }
+//
+//
+//}
+//
+//extension ListVC: UITableViewDropDelegate {
+//    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+//
+//    }
+//
+//
+//}
