@@ -14,6 +14,7 @@
 		2D07C6A62323A3F500FC7C49 /* NotificationCemter + Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D07C6A52323A3F500FC7C49 /* NotificationCemter + Name.swift */; };
 		2D2DD074230ED904006A4B73 /* FavoriteVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2DD073230ED904006A4B73 /* FavoriteVC.swift */; };
 		2D47F95322F86B2D003F10C4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D47F95222F86B2D003F10C4 /* AudioToolbox.framework */; };
+		2D50D54D2372B0EB009508A6 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D50D54C2372B0EB009508A6 /* CoreDataManager.swift */; };
 		2DC8646422F39591002E6582 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8646322F39591002E6582 /* AppDelegate.swift */; };
 		2DC8646922F39591002E6582 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DC8646722F39591002E6582 /* Main.storyboard */; };
 		2DC8646B22F39592002E6582 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DC8646A22F39592002E6582 /* Assets.xcassets */; };
@@ -34,6 +35,7 @@
 		2D2DD073230ED904006A4B73 /* FavoriteVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteVC.swift; sourceTree = "<group>"; };
 		2D47F95022F86B2D003F10C4 /* Player_v3.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Player_v3.entitlements; sourceTree = "<group>"; };
 		2D47F95222F86B2D003F10C4 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		2D50D54C2372B0EB009508A6 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		2DC8646022F39591002E6582 /* Player_v3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Player_v3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DC8646322F39591002E6582 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2DC8646822F39591002E6582 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				2D03C667231EFCD1002481E1 /* Player.xcdatamodeld */,
+				2D50D54C2372B0EB009508A6 /* CoreDataManager.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -75,6 +78,15 @@
 				2D2DD073230ED904006A4B73 /* FavoriteVC.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		2D07862A232FA11F00E0EB09 /* Singleton */ = {
+			isa = PBXGroup;
+			children = (
+				2D07C6A22323A07300FC7C49 /* CoreDataSingleton.swift */,
+				2D03357A232E76BE00253DD1 /* PlaylistSingleton.swift */,
+			);
+			path = Singleton;
 			sourceTree = "<group>";
 		};
 		2D07C6A42323A3D000FC7C49 /* EXTENSION */ = {
@@ -98,8 +110,6 @@
 			children = (
 				2DC8647722F3962E002E6582 /* SongModel.swift */,
 				2D0460CA231ED572002A26EF /* TableViewCustomCell.swift */,
-				2D07C6A22323A07300FC7C49 /* CoreDataSingleton.swift */,
-				2D03357A232E76BE00253DD1 /* PlaylistSingleton.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -143,6 +153,7 @@
 			children = (
 				2D07C6A42323A3D000FC7C49 /* EXTENSION */,
 				2D47F95022F86B2D003F10C4 /* Player_v3.entitlements */,
+				2D07862A232FA11F00E0EB09 /* Singleton */,
 				2D52204D2315A2E300BBA748 /* Model */,
 				2DC808572317E954002E0835 /* View */,
 				2D06831922F856C500F87422 /* Controllers */,
@@ -260,6 +271,7 @@
 				2D03C669231EFCD1002481E1 /* Player.xcdatamodeld in Sources */,
 				2DC8646422F39591002E6582 /* AppDelegate.swift in Sources */,
 				2D2DD074230ED904006A4B73 /* FavoriteVC.swift in Sources */,
+				2D50D54D2372B0EB009508A6 /* CoreDataManager.swift in Sources */,
 				2D03357B232E76BE00253DD1 /* PlaylistSingleton.swift in Sources */,
 				2D07C6A32323A07300FC7C49 /* CoreDataSingleton.swift in Sources */,
 				2D0460CB231ED572002A26EF /* TableViewCustomCell.swift in Sources */,

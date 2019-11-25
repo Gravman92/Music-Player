@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
+   uuid = "D66EF441-185D-46CE-A551-F84FF15FE793"
    type = "1"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            uuid = "C10EF676-4B06-4F84-92C0-7A7FD105D0BF"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Player_v3/Controllers/FavoriteVC.swift"
-            timestampString = "590257558.7227221"
+            timestampString = "590528966.782289"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "139"
-            endingLineNumber = "139">
+            startingLineNumber = "137"
+            endingLineNumber = "137"
+            landmarkName = "FavoriteVC"
+            landmarkType = "21">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

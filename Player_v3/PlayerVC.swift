@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import MediaPlayer
 
-class PlayerVC: UIViewController {
+class PlayerVC: UIViewController{
 
     @IBOutlet weak var songFullName: UILabel!
     @IBOutlet weak var songName: UILabel!
@@ -21,6 +21,7 @@ class PlayerVC: UIViewController {
     @IBOutlet weak var playPause: UIButton!
     
     var updater: CADisplayLink!
+    var global = Global()
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -28,7 +29,7 @@ class PlayerVC: UIViewController {
         
         setUpdater()
         
-        print(currentSong)
+        print(Global.currentSong)
         
     }
     
@@ -50,11 +51,11 @@ class PlayerVC: UIViewController {
     
     func defaulSong() {
         
-        if musicIsPlaying == false{
+        if Global.musicIsPlaying == false{
             do {
-                if currentSong < playlist.count {
-                    guard let url = playlist[currentSong].url else { return }
-                    try auPlayer = AVAudioPlayer(contentsOf: url)
+                if Global.currentSong < Global.playlist.count {
+                    guard let url = Global.playlist[Global.currentSong].url else { return }
+                    try Global.auPlayer = AVAudioPlayer(contentsOf: url)
                 }
             } catch {
                 print("Error")
@@ -69,22 +70,22 @@ class PlayerVC: UIViewController {
 
     }
     @objc func updatingItems (){
-        songName.text = playlist[currentSong].title
-        songFullName.text = playlist[currentSong].fullTrackName
-        auPlayer.delegate = self as AVAudioPlayerDelegate
-        albumCover.image = playlist[currentSong].artwork
-        progressSlider.setValue(Float(auPlayer.currentTime), animated: true)
-        progressSlider.maximumValue = Float(auPlayer.duration)
+        songName.text = Global.playlist[Global.currentSong].title
+        songFullName.text = Global.playlist[Global.currentSong].fullTrackName
+        Global.auPlayer.delegate = self as AVAudioPlayerDelegate
+        albumCover.image = Global.playlist[Global.currentSong].artwork
+        progressSlider.setValue(Float(Global.auPlayer.currentTime), animated: true)
+        progressSlider.maximumValue = Float(Global.auPlayer.duration)
         
-        let currentTime = Int(auPlayer.currentTime)
+        let currentTime = Int(Global.auPlayer.currentTime)
         let minutesTime = currentTime / 60
         let secondsTime = currentTime - minutesTime * 60
         playerTime.text = NSString(format: "%02d:%02d", minutesTime, secondsTime) as String
-        let currentTimeDur = Int(auPlayer.duration)
+        let currentTimeDur = Int(Global.auPlayer.duration)
         let minutesDur = currentTimeDur / 60
         let secondsDur = currentTimeDur - minutesDur * 60
         durationTime.text = NSString(format: "%02d:%02d", minutesDur, secondsDur) as String
-        if auPlayer.isPlaying {
+        if Global.auPlayer.isPlaying {
             playPause.setImage(UIImage(named: "2"), for: .normal)
         } else {
             playPause.setImage(UIImage(named: "1"), for: .normal)
@@ -117,11 +118,11 @@ class PlayerVC: UIViewController {
     }
     
     @objc func playControlCenter() {
-        auPlayer.play()
+        Global.auPlayer.play()
     }
     
     @objc func pauseControlCenter() {
-        auPlayer.pause()
+        Global.auPlayer.pause()
     }
     
     @objc func nextControlCenter() {
@@ -133,50 +134,57 @@ class PlayerVC: UIViewController {
     }
     
     func prevSong() {
-        auPlayer.stop()
-        musicIsPlaying = false
-        currentSong -= 1
+        Global.auPlayer.stop()
+        Global.musicIsPlaying = false
+        Global.currentSong -= 1
         
-        if currentSong < 0 {
-            currentSong = playlist.count - 1
+        if Global.currentSong < 0 {
+            Global.currentSong = Global.playlist.count - 1
         }
         do {
-            try auPlayer = AVAudioPlayer(contentsOf: playlist[currentSong].url!)
-        } catch{
+            if Global.currentSong < Global.playlist.count {
+                guard let url = Global.playlist[Global.currentSong].url else { return }
+                try Global.auPlayer = AVAudioPlayer(contentsOf: url)
+            }
+                
+        } catch {
             print ("Error")
         }
-        auPlayer.play()
+        Global.auPlayer.play()
     }
     func nextSong() {
-        auPlayer.stop()
-        musicIsPlaying = false
-        currentSong += 1
-        if currentSong >= playlist.count {
-            currentSong = 0
+        Global.auPlayer.stop()
+        Global.musicIsPlaying = false
+        Global.currentSong += 1
+        if Global.currentSong >= Global.playlist.count {
+            Global.currentSong = 0
         }
         do {
-            try auPlayer = AVAudioPlayer(contentsOf: playlist[currentSong].url!)
+            if Global.currentSong < Global.playlist.count {
+                guard let url = Global.playlist[Global.currentSong].url else { return }
+                try Global.auPlayer = AVAudioPlayer(contentsOf: url)
+            }
         } catch {
             print("Error")
         }
-        auPlayer.play()
+        Global.auPlayer.play()
     }
     
     //MARK: - Action
     
     @IBAction func playPauseBut(_ sender: UIButton) {
-        if auPlayer.isPlaying {
-            musicIsPlaying = false
-            auPlayer.pause()
+        if Global.auPlayer.isPlaying {
+            Global.musicIsPlaying = false
+            Global.auPlayer.pause()
         } else {
-            musicIsPlaying = true
-            auPlayer.play()
+            Global.musicIsPlaying = true
+            Global.auPlayer.play()
         }
     }
     
     @IBAction func stopBut(_ sender: UIButton) {
-        auPlayer.stop()
-        auPlayer.currentTime = 0
+        Global.auPlayer.stop()
+        Global.auPlayer.currentTime = 0
     }
     
     @IBAction func prevBut(_ sender: UIButton) {
@@ -188,7 +196,7 @@ class PlayerVC: UIViewController {
     }
     
     @IBAction func timeIntervalSlider(_ sender: UISlider) {
-        auPlayer.currentTime = TimeInterval(progressSlider.value)
+        Global.auPlayer.currentTime = TimeInterval(progressSlider.value)
     }
 }
 
@@ -196,8 +204,8 @@ extension PlayerVC: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         if flag {
             nextSong()
-            musicIsPlaying = true
-            auPlayer.play()
+            Global.musicIsPlaying = true
+            Global.auPlayer.play()
         }
     }
 }

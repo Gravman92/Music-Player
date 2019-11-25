@@ -8,13 +8,29 @@
 import Foundation
 import AVFoundation
 
-var auPlayer = AVAudioPlayer()
-var playlist: [SongModel] = []
-var playlistVar: [SongModel] = []
-var currentSong: Int = 0
-var musicIsPlaying: Bool = false
-var shuffleMode: Bool = false
-var repeatMode: Bool = false
-var isFavorite: Bool = false
+class Global {
+    
+    static var auPlayer = AVAudioPlayer()
+    static var playlist: [SongModel] = []
+    static var playlistVar: [SongModel] = []
+    static var currentSong: Int = 0
+    static var musicIsPlaying: Bool = false
+    static var shuffleMode: Bool = false
+    static var repeatMode: Bool = false
+    static var isFavorite: Bool = false
+    
+
+    func createPl() {
+        
+        let folderURL = Bundle.main.paths(forResourcesOfType: nil, inDirectory: "Music")
+        
+        for song in folderURL {
+            let songPath = URL(fileURLWithPath: song)
+            let avplayerItem = AVPlayerItem(url: songPath)
+            let itemOfPlaylist = SongModel(withAVPlayerItem: avplayerItem, url: songPath)
+            Global.playlist.append(itemOfPlaylist)
+        }
+    }
+}
 
 

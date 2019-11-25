@@ -11,9 +11,12 @@ import AVFoundation
 import CoreData
 import MobileCoreServices
 
+
 class ListVC: UIViewController {
-    var updater: CADisplayLink! = nil
-    var favoritePlaylist: [SongModel] = []
+    var updater: CADisplayLink!
+
+
+//    var favoritePlaylist: [SongModel] = FavoriteVC.createFavoritePl(SongModel)
     
     @IBOutlet weak var playlistTable: UITableView!
     
@@ -26,27 +29,26 @@ class ListVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         setUpdater()
-        
-//        updateData(songName: <#T##String#>, isFavorite: <#T##Bool#>)
+
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        playlistTable.setEditing(true, animated: true)
         creatingPlaylist()
         managers ()
         background()
         searchBar.delegate = self
         addObserver()
-//        playlistTable.dragDelegate = self
-//        playlistTable.dropDelegate = self
         
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         updater.invalidate()
     }
+    
+    
+        // MARK: - Metods
     
     func addObserver() {
         notification.addObserver(self, selector: #selector(handleHotification), name: NSNotification.Name.songData, object: nil)
@@ -66,7 +68,7 @@ class ListVC: UIViewController {
     func saveData(songName: String, isFavorite: Bool) {
         let context = CoreDataSingleton.shared.persistentContainer.viewContext
         
-        let cont = NSEntityDescription.insertNewObject(forEntityName: "Songs", into: context) as! Songs
+        let cont = NSEntityDescription.insertNewObject(forEntityName: "Songs", into: context)
         cont.setValue(songName, forKey: "songName")
         cont.setValue(isFavorite, forKey: "isFavorite")
         
@@ -78,54 +80,22 @@ class ListVC: UIViewController {
         }
     }
     
-    func updateData(songName: String, isFavorite: Bool) {
-     
-        let context = CoreDataSingleton.shared.persistentContainer.viewContext
-        
-        let cont: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Songs")
-        cont.predicate = NSPredicate(format: "isFavorite")
-        
-        do {
-            
-           let cont1 = try context.fetch(cont)
-            let favoriteUpdate = cont1[0] as! NSManagedObject
-            favoriteUpdate.setValue("Favorite", forKey: "isFavorite")
-            
-            do {
-                
-                try context.save()
-            
-            } catch {
-                
-                print ("error")
-            
-            }
-            
-        } catch {
-            
-            print ("error")
-            
-        }
-        
-    }
+
     
-    // MARK: - Metods
-//    func longPress () {
-//        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(gestureRecognizer:)))
-//    }
     
     @objc func longPressGestureRecognized(gestureRecognizer: UIGestureRecognizer) {
         
     }
     
     func creatingPlaylist () {
-        let folderURL = Bundle.main.paths(forResourcesOfType: nil, inDirectory: "Music")
         
+        let folderURL = Bundle.main.paths(forResourcesOfType: nil, inDirectory: "Music")
+
         for song in folderURL {
             let songPath = URL(fileURLWithPath: song)
             let avplayerItem = AVPlayerItem(url: songPath)
             let itemOfPlaylist = SongModel(withAVPlayerItem: avplayerItem, url: songPath)
-            playlist.append(itemOfPlaylist)
+            Global.playlist.append(itemOfPlaylist)
         }
     }
     
@@ -137,7 +107,7 @@ class ListVC: UIViewController {
     }
     
     func managers () {
-        playlistVar = playlist
+        Global.playlistVar = Global.playlist
     }
     
     func setUpdater() {
@@ -148,8 +118,8 @@ class ListVC: UIViewController {
     @objc func updatingCell () {
         var index = 0
         var actualIndex: Int?
-        for song in playlistVar {
-            if song.fullTrackName == playlist[currentSong].fullTrackName {
+        for song in Global.playlistVar {
+            if song.fullTrackName == Global.playlist[Global.currentSong].fullTrackName {
                 actualIndex = index
                 break
             } else {
@@ -162,6 +132,7 @@ class ListVC: UIViewController {
             }
         }
     }
+    
     
     @IBAction func searchBut(_ sender: UIButton) {
   
@@ -177,12 +148,12 @@ class ListVC: UIViewController {
 extension ListVC: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return playlistVar.count
+        return Global.playlistVar.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCustomCell
-        cell.fullSongNameLabel.text = playlistVar[indexPath.row].fullTrackName
+        cell.fullSongNameLabel.text = Global.playlistVar[indexPath.row].fullTrackName
         cell.isFavoriteButton.tag = indexPath.row
 
         return cell
@@ -194,20 +165,20 @@ extension ListVC: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         do {
-            try auPlayer = AVAudioPlayer(contentsOf: playlistVar[indexPath.row].url!)
+            try Global.auPlayer = AVAudioPlayer(contentsOf: Global.playlistVar[indexPath.row].url!)
             
             var index = -1
             
-            for song in playlist {
+            for song in Global.playlist {
                 index += 1
-                if song.fullTrackName == playlistVar[indexPath.row].fullTrackName {
-                    currentSong = index
+                if song.fullTrackName == Global.playlistVar[indexPath.row].fullTrackName {
+                    Global.currentSong = index
                     break
                 }
             }
             
-            musicIsPlaying = true
-            auPlayer.play()
+            Global.musicIsPlaying = true
+            Global.auPlayer.play()
             playlistTable.reloadData()
         } catch {
             print("Error!")
@@ -217,11 +188,11 @@ extension ListVC: UITableViewDelegate {
 extension ListVC: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard !searchText.isEmpty else {
-            playlistVar = playlist
+            Global.playlistVar = Global.playlist
             playlistTable.reloadData()
             return
         }
-        playlistVar = playlist.filter({ song -> Bool in
+        Global.playlistVar = Global.playlist.filter({ song -> Bool in
             return song.fullTrackName.lowercased().contains(searchText.lowercased())
         })
         playlistTable.reloadData()

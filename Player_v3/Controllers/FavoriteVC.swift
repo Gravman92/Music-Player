@@ -20,16 +20,18 @@ class FavoriteVC: UIViewController {
     var favoritePlaylist: [Songs] = []
     var model: [Songs] = []
     var edit: Bool = false
+    let fetch = CoreDataManager()
     
 
     
     func createFavoritePl(with model: [Songs]) {
         
-//        let songName = model.map{ return $0.songName}
+        let songName = model.map{ return $0.songName}
+        fetch.fetchData(songName: "", isFavorite: true)
         myFavoriteTable.reloadData()
         
     }
-    
+
     func fetchSongs() {
         
         let context = CoreDataSingleton.shared.persistentContainer.viewContext
@@ -81,6 +83,7 @@ class FavoriteVC: UIViewController {
         myFavoriteTable.delegate = self
         myFavoriteTable.dataSource = self
         fetchSongs()
+//        ListVC.updateData(song)
 //        editOut.addTarget(self, action: #selector(handlePressed), for: .touchUpInside)
         
     }
@@ -92,8 +95,7 @@ class FavoriteVC: UIViewController {
     }
     @IBAction func editAction(_ sender: Any) {
         
-        
-        myFavoriteTable.isEditing = true
+        myFavoriteTable.setEditing(!myFavoriteTable.isEditing, animated: true)
         
     }
     
@@ -108,7 +110,6 @@ extension FavoriteVC: UITableViewDataSource {
         cellFav.textLabel?.text =  model[indexPath.row].songName
         return cellFav
     }
-    
     
 }
 
