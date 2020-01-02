@@ -21,8 +21,8 @@ class PlayerVC: UIViewController{
     @IBOutlet weak var playPause: UIButton!
     
     var updater: CADisplayLink!
-    var global = Global()
-    
+//    var global = Global()
+    var list = ListVC()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
